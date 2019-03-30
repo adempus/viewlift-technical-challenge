@@ -3,8 +3,11 @@ Technical challenge as per ViewLift's interview process.
 A simple Android app for a playlist of video data gathered from an XML resource: 
 http://sample-firetv-web-app.s3-website-us-west-2.amazonaws.com/feed_firetv.xml
 
-External libraries used were ExoPlayer for video playback capabilities, and UniversalImageLoader for 
-dynamically loading thumbnail previews of videos onto selectable ListView items.
+External libraries used were ExoPlayer for video playback capabilities:
+https://github.com/google/ExoPlayer
+
+and UniversalImageLoader for dynamically loading thumbnail previews of videos onto selectable ListView items:
+https://github.com/nostra13/Android-Universal-Image-Loader
 
 
 ## Preview:
