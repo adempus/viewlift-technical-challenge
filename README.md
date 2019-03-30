@@ -7,5 +7,5 @@ External libraries used were ExoPlayer for video playback capabilities, and Univ
 dynamically loading thumbnail previews of videos onto selectable ListView items.
 
 
-##Preview:
+## Preview:
 ![alt text](https://github.com/adempus/viewlift-technical-challenge/blob/master/2019_03_30_00_56_14.gif)
