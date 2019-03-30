@@ -30,22 +30,22 @@ public class VideoListAdapter extends ArrayAdapter<Video> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         initImageLoader();
-        Video video = videos.get(position);
+        final Video video = videos.get(position);
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(resource, parent, false);
 
             // gather view resources for content display
-            ImageView thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail_view);
-            TextView title = (TextView) convertView.findViewById(R.id.video_title);
-            TextView duration = (TextView) convertView.findViewById(R.id.duration);
+            ImageView thumbnail = convertView.findViewById(R.id.thumbnail_view);
+            TextView title = convertView.findViewById(R.id.video_title);
+            TextView duration = convertView.findViewById(R.id.duration);
             // set content for title and duration
             title.setText(video.title);
             duration.setText(video.duration);
 
             ImageLoader imageLoader = ImageLoader.getInstance();
-            // set default image to display if error is encountered displaying images from URLs.
+            // set default image from drawable resource to display while thumbnail is inaccessible.
             int defaultImage = context.getResources().getIdentifier(
                     "@drawable/thumbnail_pending",null, context.getPackageName()
             );

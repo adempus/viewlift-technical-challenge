@@ -1,5 +1,7 @@
 package com.example.viewlift_tech_challenge;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +16,10 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-
+/**
+ * MainActivity which initiates download and parsing of XML data
+ * for display in a ListView of video selections.
+ */
 public class MainActivity extends AppCompatActivity {
     private String feedUrl;
     private List<Video> videoList;
@@ -23,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.feedUrl = "http://sample-firetv-web-app.s3-website-us-west-2.amazonaws.com/feed_firetv.xml";
+        feedUrl = "http://sample-firetv-web-app.s3-website-us-west-2.amazonaws.com/feed_firetv.xml";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         videoList = new ArrayList<>();
@@ -34,13 +39,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Called by XmlFeedDownloadTask after XML data is parsed, to load into a ListView. **/
-    private void loadList() {
-        videoListView = (ListView) findViewById(R.id.videoListView);
+    /** Initializes and sets up a ListView with ArrayAdapter for display of extracted content **/
+    private void initVideoPlaylist() {
+        videoListView = findViewById(R.id.videoListView);
         videoListAdapter = new VideoListAdapter(
                 this, R.layout.video_listview_layout, videoList
         );
         videoListView.setAdapter(videoListAdapter);
+        
+        // Event listener for video selections. Launches a fullscreen activity for video playback.
+        videoListView.setOnItemClickListener((parent, view, position, id) -> {
+            Video vid = (Video) videoListView.getItemAtPosition(position);
+            final String vidUrl = vid.videoUrl;
+            launchVideoPlaybackActivity(vidUrl);
+        });
+    }
+
+    /** Starts the activity for video playback.
+     * @param videoUrl  String url to remote video resource.
+     */
+    private void launchVideoPlaybackActivity(String videoUrl) {
+        Intent videoPlaybackIntent = new Intent(this, VideoPlaybackActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("video_url", videoUrl);
+        videoPlaybackIntent.putExtras(bundle);
+        startActivity(videoPlaybackIntent);
     }
 
     /**
@@ -73,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     /* to verify correct initialization of Video objects from extracted XML data. */
     private void printResults() {
         for (Video v : videoList) {
-            System.out.println("---\n"+v.toString());
+            System.out.println(v.toString());
         }
     }
 
@@ -128,6 +151,16 @@ public class MainActivity extends AppCompatActivity {
 
     /** An AsyncTask for downloading the XML document from provided URL. */
     private class XmlFeedDownloadTask extends AsyncTask<String, Void, Document> {
+        private ProgressDialog loading;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loading = new ProgressDialog(MainActivity.this);
+            loading.setMessage("Loading Playlist");
+            loading.show();
+        }
+
         @Override
         protected Document doInBackground(String... urls) {
             try {
@@ -140,8 +173,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Document result) {
             parseXmlDocument(result);
-            printResults();
-            loadList();
+//            printResults();
+            initVideoPlaylist();
+            loading.dismiss();
         }
     }
 }
