@@ -10,15 +10,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * MainActivity which initiates download and parsing of XML data
- * for display in a ListView of video selections.
+ * MainActivity which initiates download and parsing of XML data for display in a ListView of video selections.
  */
 public class MainActivity extends AppCompatActivity {
     private String feedUrl;
@@ -46,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 this, R.layout.video_listview_layout, videoList
         );
         videoListView.setAdapter(videoListAdapter);
-        
         // Event listener for video selections. Launches a fullscreen activity for video playback.
         videoListView.setOnItemClickListener((parent, view, position, id) -> {
             Video vid = (Video) videoListView.getItemAtPosition(position);
@@ -71,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
      * @param url   link to the XML resource to download
      * @returns     a Document object model for the downloaded XML resource.
      */
-    private Document getXmlDocument(String url) throws Exception {
+    private Document getXmlDocument(String url)
+            throws ParserConfigurationException, SAXException, IOException
+    {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         return docBuilder.parse(new URL(url).openStream());
@@ -165,8 +169,8 @@ public class MainActivity extends AppCompatActivity {
         protected Document doInBackground(String... urls) {
             try {
                 return getXmlDocument(urls[0]);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            } catch (ParserConfigurationException | SAXException | IOException  ex) {
+                System.err.println(ex.getMessage());
             }
             return null;
         }

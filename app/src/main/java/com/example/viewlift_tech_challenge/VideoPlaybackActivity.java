@@ -3,7 +3,6 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
-
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -13,9 +12,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 /**
- * Activity for streaming videos selected from MainActivity.
- * Utilizes ExoPlayer for playing videos from URL.
- **/
+ * Activity for streaming videos selected from MainActivity. Utilizes ExoPlayer for playing videos from URL.
+ */
 public class VideoPlaybackActivity extends AppCompatActivity {
     private PlayerView playbackView;
     private ExoPlayer videoPlayer;
@@ -32,6 +30,7 @@ public class VideoPlaybackActivity extends AppCompatActivity {
         playbackView = findViewById(R.id.playback_view);
     }
 
+    /** Sets up video player for playback when ready. **/
     @Override
     protected void onStart() {
         super.onStart();
